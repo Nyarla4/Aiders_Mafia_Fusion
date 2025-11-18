@@ -3,9 +3,9 @@
     "TypeId": "NetworkProjectConfig",
     "PeerMode": 0,
     "LagCompensation": {
-        "Enabled": false,
+        "Enabled": true,
         "HitboxBufferLengthInMs": 200,
-        "HitboxDefaultCapacity": 512,
+        "HitboxDefaultCapacity": 16,
         "CachedStaticCollidersSize": 64
     },
     "EnqueueIncompleteSynchronousSpawns": false,
@@ -58,16 +58,13 @@
         "AdditionalLoss": 0.0
     },
     "Heap": {
-        "PageShift": 15,
-        "PageCount": 256,
+        "PageShift": 14,
+        "PageCount": 128,
         "GlobalsSize": 0
     },
     "AssembliesToWeave": [
-        "Fusion.Unity",
         "Assembly-CSharp",
         "Assembly-CSharp-firstpass",
-        "Fusion.Addons.Physics",
-        "Fusion.Addons.FSM",
         "PhotonVoice.Fusion"
     ],
     "UseSerializableDictionary": true,

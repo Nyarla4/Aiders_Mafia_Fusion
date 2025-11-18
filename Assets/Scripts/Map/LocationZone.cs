@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -8,12 +9,18 @@ public class LocationZone : MonoBehaviour
 {
 	public string displayName;
 
+	public List<string> PlayerLog { get; private set; } = new();
+
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.transform.parent && other.transform.parent.TryGetComponent(out PlayerObject pObj) && pObj == PlayerObject.Local)
+		if (other.transform.parent && other.transform.parent.TryGetComponent(out PlayerObject pObj))
 		{
-			GameManager.im.gameUI.SetRoomText(displayName);
-			pObj.Controller.Location = this;
+			PlayerLog.Add(pObj.Nickname.ToString());
+			if(pObj == PlayerObject.Local)
+            {
+				GameManager.im.gameUI.SetRoomText(displayName);
+				pObj.Controller.Location = this;
+            }
 		}
 	}
 }
