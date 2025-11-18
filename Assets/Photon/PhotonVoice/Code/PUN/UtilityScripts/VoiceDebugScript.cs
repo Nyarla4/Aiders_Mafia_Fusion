@@ -187,7 +187,7 @@ namespace Photon.Voice.PUN.UtilityScripts
         {
             if (this.IncreaseLogLevels)
             {
-                foreach (var l in FindObjectsOfType<VoiceLogger>())
+                foreach (var l in FindObjectsByType<VoiceLogger>(FindObjectsSortMode.None))
                 {
                     l.LogLevel = LogLevel.Trace;
                 }

@@ -60,7 +60,7 @@ namespace Photon.Voice.PUN
             {
                 if (instance == null)
                 {
-                    PunVoiceClient[] objects = FindObjectsOfType<PunVoiceClient>();
+                    PunVoiceClient[] objects = FindObjectsByType<PunVoiceClient>(FindObjectsSortMode.None);
                     if (objects == null || objects.Length < 1)
                     {
                         GameObject singleton = new GameObject();

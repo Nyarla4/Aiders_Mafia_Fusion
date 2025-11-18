@@ -14,7 +14,7 @@ public class NetFailHandler : MonoBehaviour
 		
 		if (shutdownReason == ShutdownReason.GameNotFound)
 		{
-			FindObjectOfType<FusionBootstrap>().ShutdownAll();
+			FindFirstObjectByType<FusionBootstrap>().ShutdownAll();
 		}
 		
 	}

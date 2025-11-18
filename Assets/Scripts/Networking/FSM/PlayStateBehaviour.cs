@@ -70,7 +70,7 @@ public class PlayStateBehaviour : StateBehaviour
             foreach (TaskStation playerTask in PlayerRegistry.GetPlayer(Runner.LocalPlayer).Controller.tasks)
                 GameManager.Instance.taskDisplayList.Add(playerTask);
 
-            TaskBase[] foundTasks = FindObjectsOfType<TaskBase>(true);
+            TaskBase[] foundTasks = FindObjectsByType<TaskBase>(FindObjectsSortMode.None);
 
             foreach (TaskBase task in foundTasks)
             {
@@ -86,7 +86,7 @@ public class PlayStateBehaviour : StateBehaviour
     List<TaskStation> GetRandomTasks(byte taskNumber)
     {
         // Gets all of the current tasks stations in the scene and creates a new list.
-        List<TaskStation> taskList = new List<TaskStation>(FindObjectsOfType<TaskStation>());
+        List<TaskStation> taskList = new List<TaskStation>(FindObjectsByType<TaskStation>(FindObjectsSortMode.None));
 
         // Randomizes the task list
         int count = taskList.Count;
