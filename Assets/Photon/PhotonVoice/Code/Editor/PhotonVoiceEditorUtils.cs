@@ -176,13 +176,13 @@ namespace Photon.Voice.Unity.Editor
                     continue;
                 }
 
-                var defineSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(group).Split(';').Select(d => d.Trim()).ToList();
+                var defineSymbols = PlayerSettings.GetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(group)).Split(';').Select(d => d.Trim()).ToList();
 
                 if (defineSymbols.Contains(defineSymbol) && defineSymbols.Remove(defineSymbol))
                 {
                     try
                     {
-                        PlayerSettings.SetScriptingDefineSymbolsForGroup(group, string.Join(";", defineSymbols.ToArray()));
+                        PlayerSettings.SetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(group), string.Join(";", defineSymbols.ToArray()));
                     }
                     catch (Exception e)
                     {
@@ -222,7 +222,7 @@ namespace Photon.Voice.Unity.Editor
                     continue;
                 }
 
-                var defineSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(group)
+                var defineSymbols = PlayerSettings.GetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(group))
                     .Split(';')
                     .Select(d => d.Trim())
                     .ToList();
@@ -240,7 +240,7 @@ namespace Photon.Voice.Unity.Editor
 
                 try
                 {
-                    PlayerSettings.SetScriptingDefineSymbolsForGroup(group, string.Join(";", newDefineSymbols.ToArray()));
+                    PlayerSettings.SetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(group), string.Join(";", newDefineSymbols.ToArray()));
                 }
                 catch (Exception e)
                 {
