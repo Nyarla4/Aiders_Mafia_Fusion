@@ -166,7 +166,6 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 
 		// Removes the task from the complete players list
 		curPlayer.tasks.Remove(completedTask);
-
 		List<TaskStation> taskList = new List<TaskStation>(FindObjectsByType<TaskStation>(FindObjectsSortMode.None));
 		List<TaskStation> targetTasks = taskList.FindAll(f => f != completedTask && !curPlayer.tasks.Contains(f));
 		int r = UnityEngine.Random.Range(0, targetTasks.Count);
@@ -193,8 +192,8 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 		Debug.LogWarning(task);
 		if (taskDisplayList.Remove(task))
 		{
-			im.gameUI.UpdateTaskUI();
 			Rpc_CompleteTask(Runner.LocalPlayer, task);
+			im.gameUI.UpdateTaskUI();
 
 			SetInfo();
 		}

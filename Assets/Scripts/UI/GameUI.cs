@@ -147,6 +147,14 @@ public class GameUI : MonoBehaviour
 				Destroy(icon.gameObject);
 			}
 		}
+
+		foreach (var ts in GameManager.Instance.mapData.GetComponentsInChildren<TaskStation>())
+		{
+			if (PlayerMovement.Local.tasks.Contains(ts))
+			{
+				Instantiate(GameManager.rm.taskMapIconPrefab, GameManager.im.mapIconHolder).Init(ts);
+			}
+		}
 	}
 
     public void StartKillTimer()
