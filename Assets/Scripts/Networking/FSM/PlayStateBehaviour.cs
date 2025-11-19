@@ -48,7 +48,7 @@ public class PlayStateBehaviour : StateBehaviour
         }
 
         // Defines the tasks for each player
-        PlayerRegistry.ForEach(p => p.Controller.DefineTasks(GetRandomTasks(GameManager.Instance.Settings.numTasks)));
+        PlayerRegistry.ForEach(p => p.Controller.DefineTasks(GameManager.Instance.GetRandomTasks(GameManager.Instance.Settings.numTasks)));
 
         // Sets the kill timer for each suspect
         PlayerRegistry.ForEachWhere(
@@ -81,26 +81,5 @@ public class PlayStateBehaviour : StateBehaviour
 
             GameManager.vm.SetTalkChannel(VoiceManager.NONE);
         }
-    }
-
-    List<TaskStation> GetRandomTasks(byte taskNumber)
-    {
-        // Gets all of the current tasks stations in the scene and creates a new list.
-        List<TaskStation> taskList = new List<TaskStation>(FindObjectsByType<TaskStation>(FindObjectsSortMode.None));
-
-        // Randomizes the task list
-        int count = taskList.Count;
-        int last = count - 1;
-        for (int i = 0; i < last; ++i)
-        {
-            int r = Random.Range(i, count);
-            TaskStation tmp = taskList[i];
-            taskList[i] = taskList[r];
-            taskList[r] = tmp;
-        }
-
-        taskList.RemoveRange(0, taskList.Count - taskNumber);
-
-        return taskList;
     }
 }

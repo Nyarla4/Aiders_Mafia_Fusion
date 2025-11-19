@@ -19,12 +19,6 @@ public class AudioManager : MonoBehaviour
 	public AudioMixerGroup ambienceMixer;
 	public DefaultMixerTarget defaultMixer = DefaultMixerTarget.None;
 
-	public static readonly string mainVolumeParam = "MasterVol";
-	public static readonly string sfxVolumeParam = "SFXVol";
-	public static readonly string uiVolumeParam = "UIVol";
-	public static readonly string ambienceVolumeParam = "AmbienceVol";
-	public static readonly string voiceVolumeParam = "VoiceVol";
-
 	[SerializeField] private AudioBank soundBank;
 	[SerializeField] private AudioBank musicBank;
 
@@ -62,11 +56,11 @@ public class AudioManager : MonoBehaviour
 
     private void InitMixer()
 	{
-		SetMixerFromPref(mainVolumeParam);
-		SetMixerFromPref(ambienceVolumeParam);
-		SetMixerFromPref(sfxVolumeParam);
-		SetMixerFromPref(uiVolumeParam);
-		SetMixerFromPref(voiceVolumeParam);
+		SetMixerFromPref(VolumeKind.master);
+		SetMixerFromPref(VolumeKind.amb);
+		SetMixerFromPref(VolumeKind.sfx);
+		SetMixerFromPref(VolumeKind.ui);
+		SetMixerFromPref(VolumeKind.voi);
 	}
 
 	// Public Functions
@@ -178,32 +172,37 @@ public class AudioManager : MonoBehaviour
 
     public static void SetVolumeMaster(float value)
 	{
-		Instance.masterMixer.SetFloat(mainVolumeParam, ToDecibels(value));
-		SetPref(mainVolumeParam, value);
+		string name = SaveSystem.GetVolumeName(VolumeKind.master);
+		Instance.masterMixer.SetFloat(name, ToDecibels(value));
+		SaveSystem.SaveVolume(value, VolumeKind.master);
 	}
 
 	public static void SetVolumeSFX(float value)
 	{
-		Instance.masterMixer.SetFloat(sfxVolumeParam, ToDecibels(value));
-		SetPref(sfxVolumeParam, value);
+		string name = SaveSystem.GetVolumeName(VolumeKind.sfx);
+		Instance.masterMixer.SetFloat(name, ToDecibels(value));
+		SaveSystem.SaveVolume(value, VolumeKind.sfx);
 	}
 
 	public static void SetVolumeUI(float value)
 	{
-		Instance.masterMixer.SetFloat(uiVolumeParam, ToDecibels(value));
-		SetPref(uiVolumeParam, value);
+		string name = SaveSystem.GetVolumeName(VolumeKind.ui);
+		Instance.masterMixer.SetFloat(name, ToDecibels(value));
+		SaveSystem.SaveVolume(value, VolumeKind.ui);
 	}
 
 	public static void SetVolumeAmbience(float value)
 	{
-		Instance.masterMixer.SetFloat(ambienceVolumeParam, ToDecibels(value));
-		SetPref(ambienceVolumeParam, value);
+		string name = SaveSystem.GetVolumeName(VolumeKind.amb);
+		Instance.masterMixer.SetFloat(name, ToDecibels(value));
+		SaveSystem.SaveVolume(value, VolumeKind.amb);
 	}
 
 	public static void SetVolumeVoice(float value)
 	{
-		Instance.masterMixer.SetFloat(voiceVolumeParam, ToDecibels(value));
-		SetPref(voiceVolumeParam, value);
+		string name = SaveSystem.GetVolumeName(VolumeKind.voi);
+		Instance.masterMixer.SetFloat(name, ToDecibels(value));
+		SaveSystem.SaveVolume(value, VolumeKind.voi);
 	}
 
 	public static float ToDecibels(float value)
@@ -224,33 +223,42 @@ public class AudioManager : MonoBehaviour
 		return -1;
 	}
 
-    #endregion
+	#endregion
 
-    #region Player Prefs
+	//#region Player Prefs
+	//
+	//// returns a linear [0-1] volume value
+	//private static float GetPref(string pref)
+	//{
+	//	float v = PlayerPrefs.GetFloat(pref, 0.75f);
+	//	return v;
+	//}
+	//
+	//// sets a linear [0-1] volume value
+	//private static void SetPref(string pref, float val)
+	//{
+	//	PlayerPrefs.SetFloat(pref, val);
+	//}
+	//
+	//private void SetMixerFromPref(string pref)
+	//{
+	//	masterMixer.SetFloat(pref, ToDecibels(GetPref(pref)));
+	//}
+	//
+	//#endregion
 
-    // returns a linear [0-1] volume value
-    private static float GetPref(string pref)
+	#region ini
+	private void SetMixerFromPref(VolumeKind kind)
 	{
-		float v = PlayerPrefs.GetFloat(pref, 0.75f);
-		return v;
+		string volName = SaveSystem.GetVolumeName(kind);
+		float volValue = SaveSystem.LoadVolume(0.75f, kind);
+		masterMixer.SetFloat(volName, ToDecibels(volValue));
 	}
+	#endregion
 
-	// sets a linear [0-1] volume value
-    private static void SetPref(string pref, float val)
-	{
-		PlayerPrefs.SetFloat(pref, val);
-	}
+	#region Mixer & Other
 
-    private void SetMixerFromPref(string pref)
-	{
-		masterMixer.SetFloat(pref, ToDecibels(GetPref(pref)));
-	}
-
-    #endregion
-
-    #region Mixer & Other
-
-    private AudioMixerGroup DefaultMixerGroup()
+	private AudioMixerGroup DefaultMixerGroup()
 	{
 		return GetMixerGroup((MixerTarget)Instance.defaultMixer);
 	}

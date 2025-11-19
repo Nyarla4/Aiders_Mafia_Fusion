@@ -49,6 +49,8 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 	[Networked, Tooltip("Is the vocting screen currently active.")]
 	public NetworkBool VotingScreenActive { get; set; }
 
+	public List<TaskStation> TaskList = new();
+
 	private void Awake()
     {
         if(Instance == null)
@@ -224,7 +226,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 				default:
 					break;
 			}
-			duplicated = curPlayer.GotInfos.IndexOf(info) > -1;
+			duplicated = curPlayer.GotInfos.FindIndex(f=>f.IsSame(info)) > -1;
 		}
 
 		curPlayer.GotInfos.Add(info);
@@ -331,6 +333,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 		KillTarget,
     }
 
+	[System.Serializable]
 	public class Infos
     {
 		public InfoTypes Type;
@@ -353,11 +356,31 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 					result = $"King of {Team.ToString()} is at {Location.displayName}";
 					break;
                 case InfoTypes.KillTarget:
-					result = $"{Player1.Nickname} have to kill {Player1.Nickname}";
+					result = $"{Player1.Nickname} have to kill {Player2.Nickname}";
 					break;
             }
 			return result;
 		}
+		public bool IsSame(Infos info)
+        {
+            if (Type != info.Type)
+            {
+				return false;
+            }
+
+            switch (Type)
+            {
+                case InfoTypes.TeamCheck:
+                case InfoTypes.KingCheck:
+					return Player1 == info.Player1;
+                case InfoTypes.KingPlace:
+					return Team == info.Team && Location == info.Location;
+				case InfoTypes.KillTarget:
+					return Player1 == info.Player1 && Player2 == info.Player2;
+				default:
+					return false;
+			}
+        }
     }
 
 	public Infos GetNormalInfos(PlayerRef userRef)
@@ -416,5 +439,31 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 		info.Player1 = user;
 
 		return info;
+	}
+
+	public List<TaskStation> GetRandomTasks(byte taskNumber)
+	{
+		// Gets all of the current tasks stations in the scene and creates a new list.
+		if(TaskList.Count == 0)
+        {
+			TaskList = new List<TaskStation>(FindObjectsByType<TaskStation>(FindObjectsSortMode.None));
+        }
+
+		List<TaskStation> taskList = new(TaskList);
+
+		// Randomizes the task list
+		int count = taskList.Count;
+		int last = count - 1;
+		for (int i = 0; i < last; ++i)
+		{
+			int r = UnityEngine.Random.Range(i, count);
+			TaskStation tmp = taskList[i];
+			taskList[i] = taskList[r];
+			taskList[r] = tmp;
+		}
+
+		taskList.RemoveRange(0, taskList.Count - taskNumber);
+
+		return taskList;
 	}
 }

@@ -18,11 +18,11 @@ public class OptionsUI : MonoBehaviour
 
 	private void OnEnable()
 	{
-		masterVol.SetValueWithoutNotify(AudioManager.GetFloatNormalized(AudioManager.mainVolumeParam));
-		sfxVol.SetValueWithoutNotify(AudioManager.GetFloatNormalized(AudioManager.sfxVolumeParam));
-		uiVol.SetValueWithoutNotify(AudioManager.GetFloatNormalized(AudioManager.uiVolumeParam));
-		ambienceVol.SetValueWithoutNotify(AudioManager.GetFloatNormalized(AudioManager.ambienceVolumeParam));
-		voiceVol.SetValueWithoutNotify(AudioManager.GetFloatNormalized(AudioManager.voiceVolumeParam));
+		masterVol.SetValueWithoutNotify(AudioManager.GetFloatNormalized(SaveSystem.GetVolumeName(VolumeKind.master)));
+		sfxVol.SetValueWithoutNotify(AudioManager.GetFloatNormalized(SaveSystem.GetVolumeName(VolumeKind.sfx)));
+		uiVol.SetValueWithoutNotify(AudioManager.GetFloatNormalized(SaveSystem.GetVolumeName(VolumeKind.ui)));
+		ambienceVol.SetValueWithoutNotify(AudioManager.GetFloatNormalized(SaveSystem.GetVolumeName(VolumeKind.amb)));
+		voiceVol.SetValueWithoutNotify(AudioManager.GetFloatNormalized(SaveSystem.GetVolumeName(VolumeKind.voi)));
 
 		nicknameInput.interactable = regionDropdown.interactable = GameManager.Instance.Runner == null;
 	}
