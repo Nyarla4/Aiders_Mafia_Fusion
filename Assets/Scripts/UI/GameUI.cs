@@ -147,14 +147,6 @@ public class GameUI : MonoBehaviour
 				Destroy(icon.gameObject);
 			}
 		}
-
-		foreach (var ts in GameManager.Instance.mapData.GetComponentsInChildren<TaskStation>())
-		{
-			if (PlayerMovement.Local.tasks.Contains(ts))
-			{
-				Instantiate(GameManager.rm.taskMapIconPrefab, GameManager.im.mapIconHolder).Init(ts);
-			}
-		}
 	}
 
     public void StartKillTimer()
@@ -347,6 +339,10 @@ public class GameUI : MonoBehaviour
 
 	public void SetInfoUI(GameManager.Infos info)
     {
+		if(taskHolder.childCount == GameManager.Instance.Settings.numInfos)
+        {
+			Destroy(taskHolder.GetChild(0).gameObject);
+        }
 		Instantiate(taskItem, taskHolder).SetTask(info);
 	}
 }

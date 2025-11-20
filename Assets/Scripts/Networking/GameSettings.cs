@@ -14,7 +14,8 @@ public enum Teams
 [System.Serializable]
 public struct GameSettings : INetworkStruct
 {
-	public const byte TEAMS = 2;
+	public const byte MIN_INFOS = 4;
+	public const byte MAX_INFOS = 6;
 	public const byte MIN_MEETINGS = 0;
 	public const byte MAX_MEETINGS = 9;
 	public const byte MIN_TASKS = 4;
@@ -26,10 +27,12 @@ public struct GameSettings : INetworkStruct
 	public const byte MIN_WALK_SPEED = 4;
 	public const byte MAX_WALK_SPEED = 12;
 
+
+
 	//[Range(MIN_IMPOSTERS,MAX_IMPOSTERS)]
 	//public byte numImposters;
-	//[Range(MIN_TEAMS,MAX_TEAMS)]
-	//public byte numTeams;
+	[Range(MIN_INFOS, MAX_INFOS)]
+	public byte numInfos;
 	[Range(MIN_MEETINGS,MAX_MEETINGS)]
 	public byte numEmergencyMeetings;
 	[Range(MIN_TASKS,MAX_TASKS)]
@@ -45,7 +48,7 @@ public struct GameSettings : INetworkStruct
 	public static GameSettings Default => new GameSettings
 	{
 		//numImposters = 1,
-		//numTeams = 2,
+		numInfos = 4,
 		numEmergencyMeetings = 1,
 		numTasks = 6,
 		discussionTime = 15,

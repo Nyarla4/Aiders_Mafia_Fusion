@@ -9,6 +9,7 @@ using Toggle = UnityEngine.UI.Toggle;
 public class SettingsUI : MonoBehaviour
 {
 	//public TMP_Text impostersText;
+	public TMP_Text infosText;
 	public TMP_Text tasksText;
 	public TMP_Text meetingsText;
 	public TMP_Text discussTimeText;
@@ -22,7 +23,7 @@ public class SettingsUI : MonoBehaviour
 	public void Open()
 	{
 		workingSettings = GameManager.Instance.Settings;
-		//impostersText.text = $"{workingSettings.numImposters}";
+		//infosText.text = $"{workingSettings.numInfos}";
 		tasksText.text = $"{workingSettings.numTasks}";
 		meetingsText.text = $"{workingSettings.numEmergencyMeetings}";
 		discussTimeText.text = $"{workingSettings.discussionTime}";
@@ -51,11 +52,11 @@ public class SettingsUI : MonoBehaviour
 		delta = 0;
 	}
 
-	//public void IncreaseImposters()
-	//{
-	//	delta = 1;
-	//	StartCoroutine(UpdateSetting(DoImposters));
-	//}
+	public void IncreaseInfos()
+	{
+		delta = 1;
+		StartCoroutine(UpdateSetting(DoInfos));
+	}
 
 	public void IncreaseTasks()
 	{
@@ -87,11 +88,11 @@ public class SettingsUI : MonoBehaviour
 		StartCoroutine(UpdateSetting(DoWalkSpeed));
 	}
 
-	//public void DecreaseImposters()
-	//{
-	//	delta = -1;
-	//	StartCoroutine(UpdateSetting(DoImposters));
-	//}
+	public void DecreaseInfos()
+	{
+		delta = -1;
+		StartCoroutine(UpdateSetting(DoInfos));
+	}
 
 	public void DecreaseTasks()
 	{
@@ -128,15 +129,15 @@ public class SettingsUI : MonoBehaviour
 		workingSettings.playerCollision = on;
 	}
 
-	//void DoImposters()
-	//{
-	//	if (delta < 0 && workingSettings.numImposters == GameSettings.MIN_IMPOSTERS) return;
-	//	workingSettings.numImposters = Clamp(
-	//		GameSettings.MIN_IMPOSTERS,
-	//		(byte)Mathf.Min(PlayerRegistry.Count, GameSettings.MAX_IMPOSTERS),
-	//		(byte)(workingSettings.numImposters + delta));
-	//	impostersText.text = $"{workingSettings.numImposters}";
-	//}
+	void DoInfos()
+	{
+		if (delta < 0 && workingSettings.numInfos == GameSettings.MIN_INFOS) return;
+		workingSettings.numInfos = Clamp(
+			GameSettings.MIN_INFOS,
+			(byte)Mathf.Min(PlayerRegistry.Count, GameSettings.MAX_INFOS),
+			(byte)(workingSettings.numInfos + delta));
+		infosText.text = $"{workingSettings.numInfos}";
+	}
 
 	void DoTasks()
 	{

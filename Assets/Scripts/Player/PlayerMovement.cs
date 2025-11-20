@@ -168,6 +168,17 @@ public class PlayerMovement : NetworkBehaviour
 			cc.SetCollisionLayerMask(cc.Settings.CollisionLayerMask.value.OverrideBit(playerLayer, settings.playerCollision));
 			Speed = settings.walkSpeed;
 
+			var colliders = Physics.OverlapSphere(transform.position, 1f);
+            for (int i = 0; i < colliders.Length; i++)
+            {
+				var curCol = colliders[i];
+				if(curCol.TryGetComponent<LocationZone>(out var zone))
+                {
+					Location = zone;
+					break;
+                }
+			}
+
 			Server_UpdateDeadState();
 		}
 	}
