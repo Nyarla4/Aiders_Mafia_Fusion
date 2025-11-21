@@ -157,32 +157,38 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 	//	}
 	//}
 
-	//[Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-	//void Rpc_CompleteTask(PlayerRef player, TaskStation completedTask)
-	//{
-	//	PlayerMovement curPlayer = PlayerRegistry.GetPlayer(player).Controller;
-	//
-	//	// Removes the task from the complete players list
-	//	curPlayer.tasks.Remove(completedTask);
-	//	List<TaskStation> taskList = new List<TaskStation>(FindObjectsByType<TaskStation>(FindObjectsSortMode.None));
-	//	List<TaskStation> targetTasks = taskList.FindAll(f => f != completedTask && !curPlayer.tasks.Contains(f));
-	//	int r = UnityEngine.Random.Range(0, targetTasks.Count);
-	//	TaskStation targetTask = targetTasks[r];
-	//	curPlayer.tasks.Add(targetTask);
-	//
-	//	//TasksCompleted++;
-	//
-	//	//if (TasksCompleted == Settings.numTasks * (PlayerRegistry.Count - Settings.numImposters))
-	//	//{
-	//	//	Debug.Log("All Tasks Completed - Crew Wins");
-	//	//	State.winState.teamAWin = true;
-	//	//	State.Server_SetState<WinStateBehaviour>();
-	//	//}
-	//	//else
-	//	{
-	//		//Debug.Log($"{TasksCompleted} tasks completed");
-	//	}
-	//}
+	[Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+	void Rpc_CompleteTask(PlayerRef player, TaskStation completedTask)
+	{
+		PlayerMovement curPlayer = PlayerRegistry.GetPlayer(player).Controller;
+
+		curPlayer.tasks.Remove(completedTask);
+
+		Debug.Log($"after Remove");
+		foreach (var item in curPlayer.tasks)
+		{
+			Debug.Log($"{item.taskUI.task.Name} at {item.name}");
+		}
+
+		List<TaskStation> taskList = new List<TaskStation>(FindObjectsByType<TaskStation>(FindObjectsSortMode.None));
+		List<TaskStation> targetTasks = taskList.FindAll(f => f != completedTask && !curPlayer.tasks.Contains(f));
+
+		int r = UnityEngine.Random.Range(0, targetTasks.Count);
+		TaskStation newTargetTask = targetTasks[r];
+
+		Debug.Log($"{completedTask.taskUI.task.Name} clear, {newTargetTask.taskUI.task.Name} got");
+
+		curPlayer.tasks.Add(newTargetTask);
+		taskDisplayList.Add(newTargetTask);
+
+		Debug.Log($"after Add");
+		foreach (var item in curPlayer.tasks)
+		{
+			Debug.Log($"{item.taskUI.task.Name} at {item.name}");
+		}
+
+		Instantiate(rm.taskMapIconPrefab, im.mapIconHolder).Init(newTargetTask);
+	}
 
 	public void CompleteTask()
 	{
@@ -192,23 +198,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 		{
             im.gameUI.UpdateTaskUI();
 
-            //Rpc_CompleteTask(Runner.LocalPlayer, task);
-            #region taskComplete 생각해보니 굳이 RPC로 할 필요 없는듯
-            PlayerMovement curPlayer = PlayerRegistry.GetPlayer(Runner.LocalPlayer).Controller;
-
-			curPlayer.tasks.Remove(task);
-
-			List<TaskStation> taskList = new List<TaskStation>(FindObjectsByType<TaskStation>(FindObjectsSortMode.None));
-			List<TaskStation> targetTasks = taskList.FindAll(f => f != task && !curPlayer.tasks.Contains(f));
-
-			int r = UnityEngine.Random.Range(0, targetTasks.Count);
-			TaskStation targetTask = targetTasks[r];
-
-			curPlayer.tasks.Add(targetTask);
-			taskDisplayList.Add(targetTask);
-
-			Instantiate(rm.taskMapIconPrefab, im.mapIconHolder).Init(targetTask);
-			#endregion
+            Rpc_CompleteTask(Runner.LocalPlayer, task);
 
 			SetInfo();
 		}

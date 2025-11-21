@@ -13485,7 +13485,6 @@ MonoBehaviour:
     _value: 0
   _VotingScreenActive:
     _value: 0
-  TaskList: []
 --- !u!114 &1322908186
 MonoBehaviour:
   m_ObjectHideFlags: 0

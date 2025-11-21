@@ -7,8 +7,7 @@ public class YabawiTask : TaskBase
 {
     public Button[] Cups;
     [SerializeField] private int _shuffleCount = 3;
-    private float _openCloseSpeed = 20f;
-    private float _moveSpeed = 5f;
+    private float _openCloseSpeed = 30f;
     public override string Name => "Yabawi";
 
     private Coroutine _shuffleRoutine = null;
@@ -26,22 +25,20 @@ public class YabawiTask : TaskBase
         
         if (gameObject.activeInHierarchy)
         {
-            _shuffleRoutine = StartCoroutine(Shuffle());
+            _shuffleRoutine = StartCoroutine(StartShuffle());
         }
     }
 
     private void OnEnable()
     {
-        _shuffleRoutine = StartCoroutine(Shuffle());
+        _shuffleRoutine = StartCoroutine(StartShuffle());
     }
 
     /// <summary>
-    /// Shuffle
+    /// 열고 - 닫고 - 섞고
     /// </summary>
-    IEnumerator Shuffle()
+    IEnumerator StartShuffle()
     {
-        float deltaSpeed = Time.deltaTime * _moveSpeed;
-
         yield return StartCoroutine(OpenCups());
 
         //0.25초대기
@@ -49,46 +46,22 @@ public class YabawiTask : TaskBase
 
         yield return StartCoroutine(CloseCups());
 
-        //_shuffleCount 회 셔플
-        for (int i = 0; i < _shuffleCount; i++)
-        {
-            //섞을 대상
-            int notTarget = Random.Range(0, 3);
-            int target1Idx = -1;
-            int target2Idx = -1;
-            switch (notTarget)
-            {
-                case 0:
-                    target1Idx = 1;
-                    target2Idx = 2;
-                    break;
-                case 1:
-                    target1Idx = 0;
-                    target2Idx = 2;
-                    break;
-                case 2:
-                    target1Idx = 0;
-                    target2Idx = 1;
-                    break;
-            }
-            Button target1 = Cups[target1Idx];
-            float target1X = target1.transform.localPosition.x;
-            Button target2 = Cups[target2Idx];
-            float target2X = target2.transform.localPosition.x;
+        yield return StartCoroutine(ShuffleCups(_shuffleCount));
 
-            float timer = 0;
-            while (timer < 1f)
-            {
-                timer += deltaSpeed;
-                Vector3 tar1Pos = target1.transform.localPosition;
-                tar1Pos.x = Mathf.Lerp(target1X, target2X, timer / 1f);
-                target1.transform.localPosition = tar1Pos;
-                Vector3 tar2Pos = target2.transform.localPosition;
-                tar2Pos.x = Mathf.Lerp(target2X, target1X, timer / 1f);
-                target2.transform.localPosition = tar2Pos;
-                yield return null;
-            }
-        }
+        _shuffleRoutine = null;
+    }
+    
+    /// <summary>
+    /// 닫고 - 섞고
+    /// </summary>
+    IEnumerator ReShuffle()
+    {
+        //0.25초대기
+        yield return new WaitForSeconds(0.25f);
+
+        yield return StartCoroutine(CloseCups());
+
+        yield return StartCoroutine(ShuffleCups(_shuffleCount));
 
         _shuffleRoutine = null;
     }
@@ -149,6 +122,49 @@ public class YabawiTask : TaskBase
         }
     }
 
+    private IEnumerator ShuffleCups(int count)
+    {
+        //count 회 셔플
+        for (int i = 0; i < count; i++)
+        {
+            //섞을 대상
+            int notTarget = Random.Range(0, 3);
+            int target1Idx = -1;
+            int target2Idx = -1;
+            switch (notTarget)
+            {
+                case 0:
+                    target1Idx = 1;
+                    target2Idx = 2;
+                    break;
+                case 1:
+                    target1Idx = 0;
+                    target2Idx = 2;
+                    break;
+                case 2:
+                    target1Idx = 0;
+                    target2Idx = 1;
+                    break;
+            }
+            Button target1 = Cups[target1Idx];
+            float target1X = target1.transform.localPosition.x;
+            Button target2 = Cups[target2Idx];
+            float target2X = target2.transform.localPosition.x;
+
+            float timer = 0;
+            while (timer < 1f)
+            {
+                timer += Time.deltaTime;
+                Vector3 tar1Pos = target1.transform.localPosition;
+                tar1Pos.x = Mathf.Lerp(target1X, target2X, timer / 1f);
+                target1.transform.localPosition = tar1Pos;
+                Vector3 tar2Pos = target2.transform.localPosition;
+                tar2Pos.x = Mathf.Lerp(target2X, target1X, timer / 1f);
+                target2.transform.localPosition = tar2Pos;
+                yield return null;
+            }
+        }
+    }
     private IEnumerator CheckCups(int index)
     {
         float imgY = 0f;
@@ -182,7 +198,8 @@ public class YabawiTask : TaskBase
         }
         else
         {
-            ResetTask();
+            StopAllCoroutines();
+            _shuffleRoutine = StartCoroutine(ReShuffle());
         }
     }
 
