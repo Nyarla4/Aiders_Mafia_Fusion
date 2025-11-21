@@ -49,8 +49,6 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 	[Networked, Tooltip("Is the vocting screen currently active.")]
 	public NetworkBool VotingScreenActive { get; set; }
 
-	public List<TaskStation> TaskList = new();
-
 	private void Awake()
     {
         if(Instance == null)
@@ -200,7 +198,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 
 			curPlayer.tasks.Remove(task);
 
-			List<TaskStation> taskList = new (TaskList);
+			List<TaskStation> taskList = new List<TaskStation>(FindObjectsByType<TaskStation>(FindObjectsSortMode.None));
 			List<TaskStation> targetTasks = taskList.FindAll(f => f != task && !curPlayer.tasks.Contains(f));
 
 			int r = UnityEngine.Random.Range(0, targetTasks.Count);
@@ -465,12 +463,8 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 	public List<TaskStation> GetRandomTasks(byte taskNumber)
 	{
 		// Gets all of the current tasks stations in the scene and creates a new list.
-		if(TaskList.Count == 0)
-        {
-			TaskList = new List<TaskStation>(FindObjectsByType<TaskStation>(FindObjectsSortMode.None));
-        }
-
-		List<TaskStation> taskList = new(TaskList);
+		
+		List<TaskStation> taskList = new List<TaskStation>(FindObjectsByType<TaskStation>(FindObjectsSortMode.None));
 
 		// Randomizes the task list
 		int count = taskList.Count;
