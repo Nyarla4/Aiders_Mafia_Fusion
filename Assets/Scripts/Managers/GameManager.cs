@@ -158,47 +158,47 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 	//}
 
 	[Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-	void Rpc_CompleteTask(PlayerRef player, TaskStation completedTask)
+	void Rpc_CompleteTask(PlayerRef player, TaskStation completedTask, TaskStation newTask)
 	{
 		PlayerMovement curPlayer = PlayerRegistry.GetPlayer(player).Controller;
 
 		curPlayer.tasks.Remove(completedTask);
 
-		Debug.Log($"after Remove");
-		foreach (var item in curPlayer.tasks)
-		{
-			Debug.Log($"{item.taskUI.task.Name} at {item.name}");
-		}
+		//Debug.Log($"after Remove");
+		//foreach (var item in curPlayer.tasks)
+		//{
+		//	Debug.Log($"{item.taskUI.task.Name} at {item.name}");
+		//}
 
-		List<TaskStation> taskList = new List<TaskStation>(FindObjectsByType<TaskStation>(FindObjectsSortMode.None));
-		List<TaskStation> targetTasks = taskList.FindAll(f => f != completedTask && !curPlayer.tasks.Contains(f));
+		//Debug.Log($"{completedTask.taskUI.task.Name} clear, {newTargetTask.taskUI.task.Name} got");
 
-		int r = UnityEngine.Random.Range(0, targetTasks.Count);
-		TaskStation newTargetTask = targetTasks[r];
+		curPlayer.tasks.Add(newTask);
 
-		Debug.Log($"{completedTask.taskUI.task.Name} clear, {newTargetTask.taskUI.task.Name} got");
-
-		curPlayer.tasks.Add(newTargetTask);
-		taskDisplayList.Add(newTargetTask);
-
-		Debug.Log($"after Add");
-		foreach (var item in curPlayer.tasks)
-		{
-			Debug.Log($"{item.taskUI.task.Name} at {item.name}");
-		}
-
-		Instantiate(rm.taskMapIconPrefab, im.mapIconHolder).Init(newTargetTask);
+		//Debug.Log($"after Add");
+		//foreach (var item in curPlayer.tasks)
+		//{
+		//	Debug.Log($"{item.taskUI.task.Name} at {item.name}");
+		//}
 	}
 
 	public void CompleteTask()
 	{
 		TaskStation task = PlayerMovement.Local.activeInteractable as TaskStation;
-		Debug.LogWarning(task);
+		Debug.LogWarning($"[GameManager] CompleteTask {task}");
 		if (taskDisplayList.Remove(task))
 		{
-            im.gameUI.UpdateTaskUI();
+			List<TaskStation> taskList = new List<TaskStation>(FindObjectsByType<TaskStation>(FindObjectsSortMode.None));
+			List<TaskStation> targetTasks = taskList.FindAll(f => f != task && !PlayerRegistry.GetPlayer(Runner.LocalPlayer).Controller.tasks.Contains(f));
+			int r = UnityEngine.Random.Range(0, targetTasks.Count);
+			TaskStation newTask = targetTasks[r];
 
-            Rpc_CompleteTask(Runner.LocalPlayer, task);
+			im.gameUI.UpdateTaskUI();
+
+            Rpc_CompleteTask(Runner.LocalPlayer, task, newTask);
+			
+			taskDisplayList.Add(newTask);
+			im.gameUI.UpdateTaskUI();
+			Instantiate(rm.taskMapIconPrefab, im.mapIconHolder).Init(newTask);
 
 			SetInfo();
 		}

@@ -127,7 +127,6 @@ public class GameUI : MonoBehaviour
 		UpdateTaskUI();
 	}
 
-	//정보 UI로 수정 여기서 처리
 	public void UpdateTaskUI()
 	{
 		var tasks = GameManager.Instance.taskDisplayList;
