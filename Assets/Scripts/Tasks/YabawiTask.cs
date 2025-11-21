@@ -96,7 +96,7 @@ public class YabawiTask : TaskBase
     
     private IEnumerator CloseCups()
     {
-        float imgY = 0f;
+        float imgY = 100f;
         float deltaSpeed = Time.deltaTime * _openCloseSpeed;
 
         //컵 내리고
