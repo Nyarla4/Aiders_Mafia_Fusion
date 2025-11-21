@@ -287,7 +287,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 
 	void UpdateGameSettingHUD(GameSettings settings)
     {
-		//im.imposterCountDisplay.text = $"{settings.numImposters}";
+		im.infoCountDisplay.text = $"{settings.numInfos}";
 		im.tasksCountDisplay.text = $"{settings.numTasks}";
 		im.emergencyMeetingsDisplay.text = $"{settings.numEmergencyMeetings}";
 		im.discussionTimeDisplay.text = $"{settings.discussionTime}s";

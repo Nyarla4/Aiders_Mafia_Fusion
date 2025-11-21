@@ -23,7 +23,7 @@ public class SettingsUI : MonoBehaviour
 	public void Open()
 	{
 		workingSettings = GameManager.Instance.Settings;
-		//infosText.text = $"{workingSettings.numInfos}";
+		infosText.text = $"{workingSettings.numInfos}";
 		tasksText.text = $"{workingSettings.numTasks}";
 		meetingsText.text = $"{workingSettings.numEmergencyMeetings}";
 		discussTimeText.text = $"{workingSettings.discussionTime}";
@@ -134,7 +134,7 @@ public class SettingsUI : MonoBehaviour
 		if (delta < 0 && workingSettings.numInfos == GameSettings.MIN_INFOS) return;
 		workingSettings.numInfos = Clamp(
 			GameSettings.MIN_INFOS,
-			(byte)Mathf.Min(PlayerRegistry.Count, GameSettings.MAX_INFOS),
+			GameSettings.MAX_INFOS,
 			(byte)(workingSettings.numInfos + delta));
 		infosText.text = $"{workingSettings.numInfos}";
 	}

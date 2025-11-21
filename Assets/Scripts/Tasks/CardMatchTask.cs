@@ -42,18 +42,6 @@ public class CardMatchTask : TaskBase
 			return;
         }
 
-		//지금 누른 버튼 interactable false 처리
-		curButton = buttons[number - 1];
-		curButton.interactable = false;
-
-		cardUi = null;
-
-		if (curButton.TryGetComponent(out cardUi))
-		{
-			cardUi.OpenImage();
-		}
-
-		//0.5초 정도 대기 필요
 		checkCo = StartCoroutine(CardCheck(number));
 	}
 
@@ -73,7 +61,19 @@ public class CardMatchTask : TaskBase
 
 	IEnumerator CardCheck(int number)
     {
-		yield return new WaitForSeconds(0.5f);
+		//지금 누른 버튼 interactable false 처리
+		curButton = buttons[number - 1];
+		curButton.interactable = false;
+
+		cardUi = null;
+
+		if (curButton.TryGetComponent(out cardUi))
+		{
+			cardUi.OpenImage();
+		}
+
+		//0.5초 정도 대기 필요
+		yield return new WaitForSeconds(0.1f);
 
 		//이전 선택이 없는 경우
 		if (lastChecked == CardKind.none)

@@ -16,7 +16,7 @@ public class InterfaceManager : MonoBehaviour
 
 	public UIScreen mainMenuScreen;
 
-	//public TMP_Text imposterCountDisplay;
+	public TMP_Text infoCountDisplay;
 	public TMP_Text tasksCountDisplay;
 	public TMP_Text emergencyMeetingsDisplay;
 	public TMP_Text discussionTimeDisplay;
