@@ -1,4 +1,6 @@
+using Radishmouse;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,47 +11,42 @@ public class LineConnect : TaskBase
 {
 	public override string Name => "Connect";
 
-	public Slider[] targetSliders;
-	public Slider[] inputSliders;
-	public float errorMargin = 0.02f;
+	public Transform[] StartPoints;
+	public Transform[] EndPoints;
+	public UILineRenderer [] Lines;
+	public float ErrorMargin = 0.02f;
 
 	public override void ResetTask()
 	{
-		foreach(Slider slider in inputSliders)
+		foreach (Transform start in StartPoints.ToList().OrderBy(b => Random.value))
 		{
-			slider.interactable = true;
-			slider.value = Random.value;
+			start.transform.SetAsFirstSibling();
 		}
 
-		foreach (Slider slider in targetSliders)
+		foreach (Transform end in EndPoints.ToList().OrderBy(b => Random.value))
 		{
-			slider.value = Random.value;
+			end.transform.SetAsFirstSibling();
 		}
-	}
 
-	public void ReleaseSlider(int index)
-	{
-		if (Mathf.Abs(inputSliders[index].value - targetSliders[index].value) <= errorMargin)
-		{
-			inputSliders[index].value = targetSliders[index].value;
-			inputSliders[index].interactable = false;
-			
-			CheckSliders();
+        foreach (UILineRenderer line in Lines)
+        {
+			line.Points[1].position = line.Points[0].position + Vector3.right * 50f;
+			line.Points[1].GetComponent<Image>().raycastTarget = true;
+			line.gameObject.SetActive(false);
+			line.gameObject.SetActive(true);
 		}
 	}
 
-	void CheckSliders()
+	public void Check()
 	{
-		foreach (Slider slider in inputSliders)
+		for (int i = 0; i < EndPoints.Length; i++)
 		{
-			if (slider.interactable) return;
+			if(Vector3.Distance(EndPoints[i].position, Lines[i].Points[1].position) >= 50f)
+            {
+				return;
+			}
 		}
-		StartCoroutine(DelayCompleted());
-	}
 
-	IEnumerator DelayCompleted()
-	{
-		yield return new WaitForSeconds(0.5f);
 		Completed();
 	}
 }

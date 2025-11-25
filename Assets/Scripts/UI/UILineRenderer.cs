@@ -4,28 +4,28 @@ using UnityEngine.UI;
 namespace Radishmouse
 {
     [RequireComponent(typeof(CanvasRenderer))]
-    public class LineRenderer : MaskableGraphic
+    public class UILineRenderer : MaskableGraphic
     {
         //public Vector2[] points;
-        public Transform[] points;
+        public Transform[] Points;
 
-        public float thickness = 10f;
-        public bool center = true;
+        public float Thickness = 10f;
+        public bool Center = true;
 
-        [SerializeField] private Vector2 offset;
+        [SerializeField] private Vector2 _offset;
 
         protected override void OnPopulateMesh(VertexHelper vh)
         {
             vh.Clear();
 
-            if (points.Length < 2)
+            if (Points.Length < 2)
                 return;
 
-            for (int i = 0; i < points.Length - 1; i++)
+            for (int i = 0; i < Points.Length - 1; i++)
             {
                 // Create a line segment between the next two points
-                var pos1 = new Vector2(points[i].localPosition.x, points[i].localPosition.y) + offset;
-                var pos2 = new Vector2(points[i + 1].localPosition.x, points[i + 1].localPosition.y) + offset;
+                var pos1 = new Vector2(Points[i].position.x, Points[i].position.y) + _offset;
+                var pos2 = new Vector2(Points[i + 1].position.x, Points[i + 1].position.y) + _offset;
                 CreateLineSegment(pos1, pos2, vh);
 
                 int index = i * 5;
@@ -53,7 +53,7 @@ namespace Radishmouse
         /// <param name="vh">The vertex helper that the segment is added to</param>
         private void CreateLineSegment(Vector3 point1, Vector3 point2, VertexHelper vh)
         {
-            Vector3 offset = center ? (rectTransform.sizeDelta / 2) : Vector2.zero;
+            Vector3 offset = Center ? (rectTransform.sizeDelta / 2) : Vector2.zero;
 
             // Create vertex template
             UIVertex vertex = UIVertex.simpleVert;
@@ -61,19 +61,19 @@ namespace Radishmouse
 
             // Create the start of the segment
             Quaternion point1Rotation = Quaternion.Euler(0, 0, RotatePointTowards(point1, point2) + 90);
-            vertex.position = point1Rotation * new Vector3(-thickness / 2, 0);
+            vertex.position = point1Rotation * new Vector3(-Thickness / 2, 0);
             vertex.position += point1 - offset;
             vh.AddVert(vertex);
-            vertex.position = point1Rotation * new Vector3(thickness / 2, 0);
+            vertex.position = point1Rotation * new Vector3(Thickness / 2, 0);
             vertex.position += point1 - offset;
             vh.AddVert(vertex);
 
             // Create the end of the segment
             Quaternion point2Rotation = Quaternion.Euler(0, 0, RotatePointTowards(point2, point1) - 90);
-            vertex.position = point2Rotation * new Vector3(-thickness / 2, 0);
+            vertex.position = point2Rotation * new Vector3(-Thickness / 2, 0);
             vertex.position += point2 - offset;
             vh.AddVert(vertex);
-            vertex.position = point2Rotation * new Vector3(thickness / 2, 0);
+            vertex.position = point2Rotation * new Vector3(Thickness / 2, 0);
             vertex.position += point2 - offset;
             vh.AddVert(vertex);
 
